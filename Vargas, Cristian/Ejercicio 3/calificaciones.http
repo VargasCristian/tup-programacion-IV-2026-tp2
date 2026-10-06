@@ -1,0 +1,149 @@
+﻿### =============================================================
+### PRUEBAS HTTP - EJERCICIO 3: ADMINISTRACIÓN DE CALIFICACIONES
+### =============================================================
+
+@baseUrl = http://localhost:3000
+
+### 1. Documentacion de bienvenida
+GET {{baseUrl}}/
+
+### 2. Listar todas las materias disponibles
+GET {{baseUrl}}/materias
+
+### 3. Registrar una nueva materia
+POST {{baseUrl}}/materias
+Content-Type: application/json
+
+{
+  "nombre": "Arquitectura y Sistemas Operativos"
+}
+
+### 4. Error: intentar registrar materia duplicada (espera 409)
+POST {{baseUrl}}/materias
+Content-Type: application/json
+
+{
+  "nombre": "Programacion IV"
+}
+
+### 5. Listar todas las calificaciones (con nombres de materias)
+GET {{baseUrl}}/calificaciones
+
+### 6. Filtrar calificaciones por materia (materia_id = 1)
+GET {{baseUrl}}/calificaciones?materia_id=1
+
+### 7. Filtrar calificaciones por nombre de alumno (busqueda parcial)
+GET {{baseUrl}}/calificaciones?alumno=Cristian
+
+### 8. Obtener calificacion por ID existente
+GET {{baseUrl}}/calificaciones/1
+
+### 9. Registrar calificacion para un nuevo alumno (3 notas separadas)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "Lucas Benitez",
+  "materia_id": 1,
+  "nota1": 7.5,
+  "nota2": 8.0,
+  "nota3": 9.0
+}
+
+### 10. Registrar calificacion enviando array "notas" con 3 elementos
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "Sofia Castro",
+  "materia_id": 2,
+  "notas": [9.0, 9.5, 10.0]
+}
+
+### 11. Error de unicidad: alumno ya tiene calificaciones en esa materia (espera 409)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "  LUCAS   BENITEZ  ",
+  "materia_id": 1,
+  "nota1": 8,
+  "nota2": 8,
+  "nota3": 8
+}
+
+### 12. Error: materia_id no existe en la base de datos (espera 404)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "Estudiante Prueba",
+  "materia_id": 9999,
+  "nota1": 7,
+  "nota2": 7,
+  "nota3": 7
+}
+
+### 13. Error de validacion: notas fuera de la escala universitaria (1 a 10) (espera 400)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "Estudiante Con Nota Invalida",
+  "materia_id": 1,
+  "nota1": 11.5,
+  "nota2": 0.0,
+  "nota3": 7
+}
+
+### 14. Error de validacion: arreglo con cantidad de notas distinta de tres (espera 400)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": "Estudiante Incompleto",
+  "materia_id": 1,
+  "notas": [8, 9]
+}
+
+### 15. Error de validacion: nombre de alumno vacio (espera 400)
+POST {{baseUrl}}/calificaciones
+Content-Type: application/json
+
+{
+  "alumno": " ",
+  "materia_id": 1,
+  "nota1": 8,
+  "nota2": 8,
+  "nota3": 8
+}
+
+### 16. Modificar notas de una calificacion existente (PUT)
+PUT {{baseUrl}}/calificaciones/1
+Content-Type: application/json
+
+{
+  "alumno": "Cristian Vargas",
+  "materia_id": 1,
+  "nota1": 9.5,
+  "nota2": 10.0,
+  "nota3": 9.0
+}
+
+### 17. Error al modificar: colision con registro de otro alumno en la misma materia (espera 409)
+PUT {{baseUrl}}/calificaciones/2
+Content-Type: application/json
+
+{
+  "alumno": "Cristian Vargas",
+  "materia_id": 1,
+  "nota1": 8,
+  "nota2": 8,
+  "nota3": 8
+}
+
+### 18. Eliminar un registro de calificacion por ID
+DELETE {{baseUrl}}/calificaciones/3
+
+### 19. Error: eliminar calificacion inexistente (espera 404)
+DELETE {{baseUrl}}/calificaciones/9999
