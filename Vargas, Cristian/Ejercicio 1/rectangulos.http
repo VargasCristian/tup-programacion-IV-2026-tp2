@@ -1,0 +1,87 @@
+﻿### =============================================================
+### PRUEBAS HTTP - EJERCICIO 1: ADMINISTRACIÓN DE RECTÁNGULOS
+### =============================================================
+
+@baseUrl = http://localhost:3000
+
+### 1. Ruta de bienvenida / documentacion
+GET {{baseUrl}}/
+
+### 2. Obtener todos los rectangulos
+GET {{baseUrl}}/rectangulos
+
+### 3. Obtener un rectangulo por ID existente
+GET {{baseUrl}}/rectangulos/1
+
+### 4. Crear un nuevo rectangulo (calculo automatico en el servidor)
+POST {{baseUrl}}/rectangulos
+Content-Type: application/json
+
+{
+  "lado1": 6.5,
+  "lado2": 12.0
+}
+
+### 5. Crear otro rectangulo (cuadrado: lados iguales)
+POST {{baseUrl}}/rectangulos
+Content-Type: application/json
+
+{
+  "lado1": 8,
+  "lado2": 8
+}
+
+### 6. Error de validacion: falta el campo "lado2" (espera 400)
+POST {{baseUrl}}/rectangulos
+Content-Type: application/json
+
+{
+  "lado1": 5
+}
+
+### 7. Error de validacion: lado negativo o cero (espera 400)
+POST {{baseUrl}}/rectangulos
+Content-Type: application/json
+
+{
+  "lado1": -3.5,
+  "lado2": 0
+}
+
+### 8. Error de validacion: el cliente intenta enviar perimetro o superficie (espera 400)
+POST {{baseUrl}}/rectangulos
+Content-Type: application/json
+
+{
+  "lado1": 10,
+  "lado2": 20,
+  "perimetro": 60,
+  "superficie": 200
+}
+
+### 9. Modificar un rectangulo existente (PUT)
+PUT {{baseUrl}}/rectangulos/1
+Content-Type: application/json
+
+{
+  "lado1": 15,
+  "lado2": 25.5
+}
+
+### 10. Error: modificar con ID inexistente (espera 404)
+PUT {{baseUrl}}/rectangulos/9999
+Content-Type: application/json
+
+{
+  "lado1": 10,
+  "lado2": 20
+}
+
+### 11. Error: ID invalido con texto alfanumerico (espera 400)
+GET {{baseUrl}}/rectangulos/abc
+
+### 12. Eliminar un rectangulo por ID
+DELETE {{baseUrl}}/rectangulos/3
+
+### 13. Error: eliminar rectangulo inexistente (espera 404)
+DELETE {{baseUrl}}/rectangulos/9999
