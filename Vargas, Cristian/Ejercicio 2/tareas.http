@@ -1,0 +1,103 @@
+﻿### =============================================================
+### PRUEBAS HTTP - EJERCICIO 2: ADMINISTRACIÓN DE TAREAS
+### =============================================================
+
+@baseUrl = http://localhost:3000
+
+### 1. Documentacion de inicio
+GET {{baseUrl}}/
+
+### 2. Listar todas las tareas
+GET {{baseUrl}}/tareas
+
+### 3. Filtrar tareas completadas (filtro: ?estado=completadas)
+GET {{baseUrl}}/tareas?estado=completadas
+
+### 4. Filtrar tareas pendientes (filtro: ?estado=pendientes)
+GET {{baseUrl}}/tareas?estado=pendientes
+
+### 5. Filtrar con parametro booleano (?completada=true)
+GET {{baseUrl}}/tareas?completada=true
+
+### 6. Error de validacion: estado no admitido (espera 400)
+GET {{baseUrl}}/tareas?estado=en_progreso
+
+### 7. Error de validacion: valor booleano no valido (espera 400)
+GET {{baseUrl}}/tareas?completada=tal_vez
+
+### 8. Obtener tarea por ID existente
+GET {{baseUrl}}/tareas/1
+
+### 9. Crear una nueva tarea pendiente
+POST {{baseUrl}}/tareas
+Content-Type: application/json
+
+{
+  "nombre": "Entregar trabajo practico N2",
+  "completada": false
+}
+
+### 10. Crear otra tarea con estado completada por defecto omitido (false)
+POST {{baseUrl}}/tareas
+Content-Type: application/json
+
+{
+  "nombre": "Estudiar para el examen final"
+}
+
+### 11. Error de unicidad: intentar crear tarea duplicada con mayusculas/espacios (espera 409)
+POST {{baseUrl}}/tareas
+Content-Type: application/json
+
+{
+  "nombre": "  ENTREGAR TRABAJO   PRACTICO N2  "
+}
+
+### 12. Error de validacion: nombre vacio o demasiado corto (espera 400)
+POST {{baseUrl}}/tareas
+Content-Type: application/json
+
+{
+  "nombre": " "
+}
+
+### 13. Error de validacion: campo completada no booleano (espera 400)
+POST {{baseUrl}}/tareas
+Content-Type: application/json
+
+{
+  "nombre": "Tarea con estado invalido",
+  "completada": "si"
+}
+
+### 14. Modificar tarea completa (PUT)
+PUT {{baseUrl}}/tareas/1
+Content-Type: application/json
+
+{
+  "nombre": "Presentacion de Programacion IV lista para exponer",
+  "completada": true
+}
+
+### 15. Error de unicidad al modificar: asignar nombre de otra tarea (espera 409)
+PUT {{baseUrl}}/tareas/2
+Content-Type: application/json
+
+{
+  "nombre": "Presentacion de Programacion IV lista para exponer",
+  "completada": false
+}
+
+### 16. Cambiar unicamente el estado de la tarea (PATCH)
+PATCH {{baseUrl}}/tareas/1
+Content-Type: application/json
+
+{
+  "completada": false
+}
+
+### 17. Eliminar una tarea por ID
+DELETE {{baseUrl}}/tareas/3
+
+### 18. Error: eliminar tarea inexistente (espera 404)
+DELETE {{baseUrl}}/tareas/9999
